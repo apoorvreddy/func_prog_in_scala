@@ -1,6 +1,8 @@
 object Fibonacci {
     
     def fib(n: Int): Int = {
+        
+        @annotation.tailrec
         def go(n: Int, a: Int, b: Int): Int = {
             
             if (n == 0) a
