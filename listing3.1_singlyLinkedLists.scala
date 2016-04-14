@@ -29,6 +29,32 @@ object List {
         case Nil => Nil
         case Cons(h, t) => t
         }
+
+    // ex3.3 setHead. replaces first element with different value
+    def setHead[A](l: List[A], h: A): List[A] = l match {
+        case Nil => Cons(h, Nil)
+        case Cons(h_old, t) => Cons(h, t)
+        }
+
+    // ex3.4 drop which removes first n elements from a list
+    @annotation.tailrec
+    def drop[A](l: List[A], n: Int): List[A] = l match {
+                case Nil => Nil
+                case Cons(h, t) => 
+                    if (n == 0) t
+                    else drop(t, n-1)
+        }
+
+
+    // ex3.5 dropWhile remove elements which match a prefix
+    def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match{
+                case Nil => Nil
+                case Cons(h, t) =>
+                    if (f(h))
+                        dropWhile(t, f)
+                    else
+                        Cons(h, dropWhile(t, f))
+            }
     }
     
     override def main(args: Array[String]): Unit = {
@@ -43,7 +69,19 @@ object List {
     
     println(x)
 
-      val z = List.mytail(y)
+      var z = List.mytail(y)
       println(z)
+
+      z = List.setHead(z, 5)
+      println(z)
+
+      z = List.drop(y, 2)
+      println(z)
+
+      
+      z = List(1, 2, 3, 4, 5, 2, 2, 1, 3, 3)
+      z = List.dropWhile(z, (x: Int) => x == 2)
+      println(z)
+
     }
 }
