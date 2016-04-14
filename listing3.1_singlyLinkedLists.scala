@@ -20,13 +20,16 @@ object List {
     }
 
     def apply[A](as: A*): List[A] = {
-        println("in apply") 
-        println(as.tail)
         if (as.isEmpty) Nil
         else Cons(as.head, apply(as.tail: _*))
         }
-    }
 
+    // ex3.2 tail for removing first element of a list
+    def mytail[A](l: List[A]): List[A] = l match{
+        case Nil => Nil
+        case Cons(h, t) => t
+        }
+    }
     
     override def main(args: Array[String]): Unit = {
     val y = List(1, 2, 3, 4)    
@@ -39,5 +42,8 @@ object List {
         }
     
     println(x)
+
+      val z = List.mytail(y)
+      println(z)
     }
 }
