@@ -5,7 +5,9 @@ object Work extends App {
 sealed trait List[+A]
 case object Nil extends List[Nothing]
 case class Cons[+A](head: A, tail: List[A]) extends List[A]
-
+def Cons2[A](tail: List[A], head: A): List[A] = {
+    Cons(head, tail)
+}
 object List {
 
     def sum(ints: List[Int]): Int = ints match {
@@ -55,8 +57,50 @@ object List {
                     else
                         Cons(h, dropWhile(t, f))
             }
-    }
     
+    // ex3.6 init that returns a List consisting of all but the last element
+    def init[A](l: List[A]): List[A] = l match {
+            case Nil => Nil
+            case Cons(h, Nil) => Nil
+            case Cons(h, t) => Cons(h, init(t))
+        }
+
+    def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B = as match {
+            case Nil => z
+            case Cons(x, xs) => f(x, foldRight(xs, z)(f))            
+        }
+
+    def sum2(ns: List[Int]) = 
+        foldRight(ns, 0)(_ + _)
+
+    def product2(ns: List[Int]) =
+        foldRight(ns, 1.0)(_ * _)
+
+    // ex3.9 length using foldRight
+    def length[A](as: List[A]): Int =
+        foldRight(as, 0)((x: A, y: Int) => 1 + y) 
+    
+    // ex3.10 foldLeft
+    @annotation.tailrec
+    def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B = as match {
+                case Nil => z
+                case Cons(x, xs) => foldLeft(xs, f(z,x))(f)
+        }
+
+
+    // ex3.11 sum using foldLeft
+    def sum3(ns: List[Int]) =
+        foldLeft(ns, 0)(_ + _)
+
+    // ex3.11 product using foldLeft
+    def product3(ns: List[Int]) =
+        foldLeft(ns, 0)(_ * _)
+    
+    // ex3.11 length using foldLeft
+    def length2[A](ns: List[A]) =
+        foldLeft(ns, 0)((x: Int, y: A) => 1 + x)
+}
+
     override def main(args: Array[String]): Unit = {
     val y = List(1, 2, 3, 4)    
     val x = y match {
@@ -83,5 +127,18 @@ object List {
       z = List.dropWhile(z, (x: Int) => x == 2)
       println(z)
 
+      z = List(1, 2, 3, 4, 5, 2, 2, 1, 3, 3, 5)
+      z = List.init(z)
+      println(z)
+
+
+      z = List.foldRight(List(1,2,3), Nil:List[Int])(Cons(_, _))
+      println(z)
+
+      println(List.length(z))
+      z = List.foldLeft(List(1,2,3), Nil:List[Int])(Cons2(_, _))
+      println(z)
+
+      println(List.length2(z))
     }
 }
