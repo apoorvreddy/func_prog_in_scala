@@ -99,6 +99,33 @@ object List {
     // ex3.11 length using foldLeft
     def length2[A](ns: List[A]) =
         foldLeft(ns, 0)((x: Int, y: A) => 1 + x)
+
+    // ex3.12 reverse using foldLeft
+    def reverse[A](as: List[A]): List[A] =
+        foldLeft(as, Nil: List[A])(Cons2(_, _))
+
+    // ex3.13 foldLeft in terms of foldRight
+    def foldLeft2[A, B](as: List[A], z: B)(f: (B, A) => B): B = {
+            def g(a: A, b: B): B =
+                f(b, a)
+            foldRight(reverse(as), z)(g)
+        }
+       
+    // ex3.14 append in terms of foldRight
+    def append[A](as: List[A], a: List[A]): List[A] =
+        foldRight(as, a)(Cons(_, _))
+
+    // ex3.14 append via foldLeft
+    def append2[A](as: List[A], a: List[A]): List[A] =
+        foldLeft(reverse(as), a)(Cons2(_, _))
+    
+    // ex3.15 concat a list of lists
+    def concat[A](ass: List[List[A]]): List[A] =
+        foldLeft(ass, Nil: List[A])(append(_, _))
+
+   // ex3.16 add a number to each element in list
+    def map[A, B](as: List[A], f: A => B): List[B] =
+        foldRight(as, Nil:List[B])((x:A, y: List[B]) => Cons(f(x), y))
 }
 
     override def main(args: Array[String]): Unit = {
@@ -138,7 +165,27 @@ object List {
       println(List.length(z))
       z = List.foldLeft(List(1,2,3), Nil:List[Int])(Cons2(_, _))
       println(z)
+//      z = List.foldLeft2(List(1,2,3), Nil:List[Int])(Cons2(_, _))
+//      println(z)
 
-      println(List.length2(z))
+//      println(List.length2(z))
+//     println(List.reverse(z))
+
+       z = List.append(z, List(4, 5, 6))
+       println(z)
+
+       z = List.append2(z, List(7, 8, 9))
+        println(z)
+
+       val y2 = List(List(1,2,3), List(3,4,5), List(7,8,9))
+        println(y2)
+       println(List.concat(y2))
+
+        val addN = (xs: List[Int], n: Int) => List.map(xs, (x: Int) => x + n)
+        val addOne = (xs: List[Int]) => addN(xs, 1)
+        println(addOne(List(2, 3,5)))
+
+        val doubleToString = (xs: List[Double]) => List.map(xs, (d: Double) => d.toString + "2")
+        println(doubleToString(List(0.9, 1.0, 1.9)))
     }
 }
